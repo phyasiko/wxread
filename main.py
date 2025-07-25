@@ -116,7 +116,7 @@ if PUSH_METHOD:
         f"🎉 阅读代号：观潮\n"
         f"🎉 自动阅读完成！\n"
         f"⏱️ 阅读时长：{read_time} 分钟\n"
-        f"🕒 推送时间：{now_str}"
+        f"⏱️ 推送时间：{now_str}"
     )
 
     logging.info("⏱️ 开始推送...")
