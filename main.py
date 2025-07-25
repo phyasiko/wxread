@@ -8,6 +8,7 @@ import hashlib
 import requests
 import urllib.parse
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from push import push
 from config import data, headers, cookies, READ_NUM, PUSH_METHOD, book, chapter
 
@@ -110,7 +111,7 @@ logging.info("🎉 阅读脚本已完成！")
 
 if PUSH_METHOD:
     read_time = (index - 1) * 0.5
-    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    now_str = datetime.now(ZoneInfo("Asia/Shanghai")).strftime('%Y-%m-%d %H:%M:%S')
 
     message = (
         f"🎉 阅读代号：观潮\n"
