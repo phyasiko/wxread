@@ -7,6 +7,7 @@ import logging
 import hashlib
 import requests
 import urllib.parse
+from datetime import datetime
 from push import push
 from config import data, headers, cookies, READ_NUM, PUSH_METHOD, book, chapter
 
@@ -41,6 +42,7 @@ def cal_hash(input_string):
 
     return hex(_7032f5 + _cc1055)[2:].lower()
 
+
 def get_wr_skey():
     """刷新cookie密钥"""
     response = requests.post(RENEW_URL, headers=headers, cookies=cookies,
@@ -50,9 +52,11 @@ def get_wr_skey():
             return cookie.split('=')[-1][:8]
     return None
 
+
 def fix_no_synckey():
     requests.post(FIX_SYNCKEY_URL, headers=headers, cookies=cookies,
-                             data=json.dumps({"bookIds":["3300060341"]}, separators=(',', ':')))
+                  data=json.dumps({"bookIds": ["3300060341"]}, separators=(',', ':')))
+
 
 def refresh_cookie():
     logging.info(f"🍪 刷新cookie")
@@ -66,6 +70,7 @@ def refresh_cookie():
         logging.error(ERROR_CODE)
         push(ERROR_CODE, PUSH_METHOD)
         raise Exception(ERROR_CODE)
+
 
 refresh_cookie()
 index = 1
@@ -103,6 +108,15 @@ while index <= READ_NUM:
 
 logging.info("🎉 阅读脚本已完成！")
 
-if PUSH_METHOD not in (None, ''):
+if PUSH_METHOD:
+    read_time = (index - 1) * 0.5
+    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    message = (
+        f"🎉 微信读书自动阅读完成！\n"
+        f"⏱️ 阅读时长：{read_time} 分钟\n"
+        f"🕒 推送时间：{now_str}"
+    )
+
     logging.info("⏱️ 开始推送...")
-    push(f"🎉 微信读书自动阅读完成！\n⏱️ 阅读时长：{(index - 1) * 0.5}分钟。", PUSH_METHOD)
+    push(message, PUSH_METHOD)
